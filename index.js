@@ -13,8 +13,9 @@ let config = {
         userName: process.env["USERNAME"],
         password: process.env["PASSWORD"],
         options: {
+            database: process.env["DATABASE"],
             port: process.env["PORT"] || 1433,
-            encrypt: true,
+            encrypt: (process.env["ENCRYPT"] && process.env["ENCRYPT"] == 'true')  || false,
             rowCollectionOnRequestCompletion: true
         }
     },

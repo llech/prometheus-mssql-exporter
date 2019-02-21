@@ -203,7 +203,7 @@ from sys.dm_os_sys_memory`,
     }
 };
 
-const metrics = [
+const system_metrics = [
     mssql_instance_local_time,
     mssql_connections,
     mssql_deadlocks,
@@ -216,6 +216,21 @@ const metrics = [
     mssql_os_process_memory,
     mssql_os_sys_memory
 ];
+
+let metrics = [];
+const useSystemMetrics = !process.env["USE_SYSTEM_METRICS"] || process.env["USE_SYSTEM_METRICS"] == "true"; // default: false
+if (useSystemMetrics) {
+    metrics = system_metrics;
+}
+
+if (process.env["CUSTOM_METRICS"]) {
+    const customMetrics = require(process.env["CUSTOM_METRICS"]).metrics;
+    if (Array.isArray(customMetrics)) {
+        metrics = metrics.concat(customMetrics);
+    } else {
+        debug("Custom metrics file: expected array, got " + Object.prototype.toString.call(customMetrics));
+    }
+}
 
 module.exports = {
     client: client,
